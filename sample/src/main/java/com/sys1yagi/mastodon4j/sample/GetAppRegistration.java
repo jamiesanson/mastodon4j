@@ -1,6 +1,6 @@
 package com.sys1yagi.mastodon4j.sample;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sys1yagi.mastodon4j.MastodonClient;
 import com.sys1yagi.mastodon4j.api.Scope;
 import com.sys1yagi.mastodon4j.api.entity.auth.AppRegistration;
@@ -10,7 +10,7 @@ import okhttp3.OkHttpClient;
 
 public class GetAppRegistration {
     public static void main(String[] args) {
-        MastodonClient client = new MastodonClient.Builder("mstdn.jp", new OkHttpClient.Builder(), new Gson()).build();
+        MastodonClient client = new MastodonClient.Builder("mstdn.jp", new OkHttpClient.Builder(), new GsonBuilder()).build();
         Apps apps = new Apps(client);
         try {
             AppRegistration registration = apps.createApp(

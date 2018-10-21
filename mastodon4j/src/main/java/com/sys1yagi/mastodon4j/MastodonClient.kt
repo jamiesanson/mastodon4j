@@ -1,7 +1,12 @@
 package com.sys1yagi.mastodon4j
 
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.sys1yagi.mastodon4j.api.entity.Attachment
+import com.sys1yagi.mastodon4j.api.entity.PhotoAttachment
+import com.sys1yagi.mastodon4j.api.entity.VideoAttachment
 import com.sys1yagi.mastodon4j.api.exception.Mastodon4jRequestException
+import com.sys1yagi.mastodon4j.extension.RuntimeTypeAdapterFactory
 import okhttp3.*
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -16,7 +21,7 @@ private constructor(
 
     class Builder(private val instanceName: String,
                   private val okHttpClientBuilder: OkHttpClient.Builder,
-                  private val gson: Gson) {
+                  private val gson: GsonBuilder) {
 
         private var accessToken: String? = null
         private var debug = false
@@ -37,7 +42,14 @@ private constructor(
             return MastodonClient(
                     instanceName,
                     okHttpClientBuilder.addNetworkInterceptor(AuthorizationInterceptor(accessToken)).build(),
-                    gson
+                    gson.apply {
+                        registerTypeAdapterFactory(
+                                RuntimeTypeAdapterFactory.of(Attachment::class.java, "type")
+                                        .registerSubtype(PhotoAttachment::class.java, Attachment.Type.Image.value)
+                                        .registerSubtype(VideoAttachment::class.java, Attachment.Type.Gifv.value)
+                                        .registerSubtype(VideoAttachment::class.java, Attachment.Type.Video.value)
+                        )
+                    }.create()
             ).also {
                 it.debug = debug
             }

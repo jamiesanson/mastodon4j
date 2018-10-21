@@ -1,20 +1,17 @@
 package com.sys1yagi.mastodon4j.sample;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sys1yagi.mastodon4j.MastodonClient;
 import com.sys1yagi.mastodon4j.api.Pageable;
 import com.sys1yagi.mastodon4j.api.Range;
 import com.sys1yagi.mastodon4j.api.entity.Status;
 import com.sys1yagi.mastodon4j.api.exception.Mastodon4jRequestException;
 import com.sys1yagi.mastodon4j.api.method.Public;
-import com.sys1yagi.mastodon4j.api.method.Timelines;
 import okhttp3.OkHttpClient;
-
-import java.util.List;
 
 public class GetTagTimelines {
     public static void main(String[] args) {
-        MastodonClient client = new MastodonClient.Builder("mstdn.jp", new OkHttpClient.Builder(), new Gson()).build();
+        MastodonClient client = new MastodonClient.Builder("mstdn.jp", new OkHttpClient.Builder(), new GsonBuilder()).build();
         Public publicMethod = new Public(client);
 
         try {

@@ -1,6 +1,7 @@
 package com.sys1yagi.mastodon4j.sample
 
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.sys1yagi.mastodon4j.MastodonClient
 import com.sys1yagi.mastodon4j.api.Scope
 import com.sys1yagi.mastodon4j.api.entity.auth.AccessToken
@@ -53,7 +54,7 @@ object Authenticator {
         } else {
             println("access token found...")
         }
-        return MastodonClient.Builder(instanceName, OkHttpClient.Builder(), Gson())
+        return MastodonClient.Builder(instanceName, OkHttpClient.Builder(), GsonBuilder())
                 .accessToken(properties[ACCESS_TOKEN].toString())
                 .apply {
                     if (useStreaming) {
@@ -69,13 +70,13 @@ object Authenticator {
                        email: String,
                        password: String
     ): AccessToken {
-        val client = MastodonClient.Builder(instanceName, OkHttpClient.Builder(), Gson()).build()
+        val client = MastodonClient.Builder(instanceName, OkHttpClient.Builder(), GsonBuilder()).build()
         val apps = Apps(client)
         return apps.postUserNameAndPassword(clientId, clientSecret, Scope(), email, password).execute()
     }
 
     fun appRegistration(instanceName: String): AppRegistration {
-        val client = MastodonClient.Builder(instanceName, OkHttpClient.Builder(), Gson()).build()
+        val client = MastodonClient.Builder(instanceName, OkHttpClient.Builder(), GsonBuilder()).build()
         val apps = Apps(client)
         return apps.createApp(
                 "kotlindon",

@@ -9,7 +9,7 @@ import okhttp3.MultipartBody
 class RxMedia(client: MastodonClient) {
     val media = Media(client)
 
-    fun postMedia(part: MultipartBody.Part): Single<Attachment> {
+    fun postMedia(part: MultipartBody.Part): Single<Attachment<*>> {
         return Single.create {
             try {
                 val result = media.postMedia(part)

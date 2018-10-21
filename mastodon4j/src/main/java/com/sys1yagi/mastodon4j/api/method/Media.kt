@@ -12,12 +12,12 @@ import okhttp3.MultipartBody
  */
 class Media(private val client: MastodonClient) {
     //  POST /api/v1/media
-    fun postMedia(file: MultipartBody.Part): MastodonRequest<Attachment> {
+    fun postMedia(file: MultipartBody.Part): MastodonRequest<Attachment<*>> {
         val requestBody = MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addPart(file)
                 .build()
-        return MastodonRequest<Attachment>(
+        return MastodonRequest(
                 {
                     client.post("media", requestBody)
                 },
