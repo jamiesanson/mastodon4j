@@ -127,14 +127,16 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
     private final Map<String, Class<?>> labelToSubtype = new LinkedHashMap<String, Class<?>>();
     private final Map<Class<?>, String> subtypeToLabel = new LinkedHashMap<Class<?>, String>();
     private final boolean maintainType;
+    private final boolean lenient;
 
-    private RuntimeTypeAdapterFactory(Class<?> baseType, String typeFieldName, boolean maintainType) {
+    private RuntimeTypeAdapterFactory(Class<?> baseType, String typeFieldName, boolean maintainType, boolean lenient) {
         if (typeFieldName == null || baseType == null) {
             throw new NullPointerException();
         }
         this.baseType = baseType;
         this.typeFieldName = typeFieldName;
         this.maintainType = maintainType;
+        this.lenient = false;
     }
 
     /**
@@ -142,8 +144,8 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
      * typeFieldName} as the type field name. Type field names are case sensitive.
      * {@code maintainType} flag decide if the type will be stored in pojo or not.
      */
-    public static <T> RuntimeTypeAdapterFactory<T> of(Class<T> baseType, String typeFieldName, boolean maintainType) {
-        return new RuntimeTypeAdapterFactory<T>(baseType, typeFieldName, maintainType);
+    public static <T> RuntimeTypeAdapterFactory<T> of(Class<T> baseType, String typeFieldName, boolean maintainType, boolean lenient) {
+        return new RuntimeTypeAdapterFactory<T>(baseType, typeFieldName, maintainType, lenient);
     }
 
     /**
@@ -151,7 +153,7 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
      * typeFieldName} as the type field name. Type field names are case sensitive.
      */
     public static <T> RuntimeTypeAdapterFactory<T> of(Class<T> baseType, String typeFieldName) {
-        return new RuntimeTypeAdapterFactory<T>(baseType, typeFieldName, false);
+        return new RuntimeTypeAdapterFactory<T>(baseType, typeFieldName, false, false);
     }
 
     /**
@@ -159,7 +161,7 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
      * the type field name.
      */
     public static <T> RuntimeTypeAdapterFactory<T> of(Class<T> baseType) {
-        return new RuntimeTypeAdapterFactory<T>(baseType, "type", false);
+        return new RuntimeTypeAdapterFactory<T>(baseType, "type", false, false);
     }
 
     /**
@@ -218,15 +220,23 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
                 }
 
                 if (labelJsonElement == null) {
-                    throw new JsonParseException("cannot deserialize " + baseType
-                            + " because it does not define a field named " + typeFieldName);
+                    if (lenient) {
+                        return null;
+                    } else {
+                        throw new JsonParseException("cannot deserialize " + baseType
+                                + " because it does not define a field named " + typeFieldName);
+                    }
                 }
                 String label = labelJsonElement.getAsString();
                 @SuppressWarnings("unchecked") // registration requires that subtype extends T
                         TypeAdapter<R> delegate = (TypeAdapter<R>) labelToDelegate.get(label);
                 if (delegate == null) {
-                    throw new JsonParseException("cannot deserialize " + baseType + " subtype named "
-                            + label + "; did you forget to register a subtype?");
+                    if (lenient) {
+                        return null;
+                    } else {
+                        throw new JsonParseException("cannot deserialize " + baseType + " subtype named "
+                                + label + "; did you forget to register a subtype?");
+                    }
                 }
                 return delegate.fromJsonTree(jsonElement);
             }
@@ -237,8 +247,12 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
                 @SuppressWarnings("unchecked") // registration requires that subtype extends T
                         TypeAdapter<R> delegate = (TypeAdapter<R>) subtypeToDelegate.get(srcType);
                 if (delegate == null) {
-                    throw new JsonParseException("cannot serialize " + srcType.getName()
-                            + "; did you forget to register a subtype?");
+                    if (lenient) {
+                        return;
+                    } else {
+                        throw new JsonParseException("cannot serialize " + srcType.getName()
+                                + "; did you forget to register a subtype?");
+                    }
                 }
                 JsonObject jsonObject = delegate.toJsonTree(value).getAsJsonObject();
 
@@ -250,8 +264,12 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
                 JsonObject clone = new JsonObject();
 
                 if (jsonObject.has(typeFieldName)) {
-                    throw new JsonParseException("cannot serialize " + srcType.getName()
-                            + " because it already defines a field named " + typeFieldName);
+                    if (lenient) {
+                        return;
+                    } else {
+                        throw new JsonParseException("cannot serialize " + srcType.getName()
+                                + " because it already defines a field named " + typeFieldName);
+                    }
                 }
                 clone.add(typeFieldName, new JsonPrimitive(label));
 

@@ -45,7 +45,7 @@ private constructor(
                     okHttpClientBuilder.addNetworkInterceptor(AuthorizationInterceptor(accessToken)).build(),
                     gson.apply {
                         registerTypeAdapterFactory(
-                                RuntimeTypeAdapterFactory.of(Attachment::class.java, "type")
+                                RuntimeTypeAdapterFactory.of(Attachment::class.java, "type", false, true)
                                         .registerSubtype(PhotoAttachment::class.java, Attachment.Type.Image.value)
                                         .registerSubtype(GifvAttachment::class.java, Attachment.Type.Gifv.value)
                                         .registerSubtype(VideoAttachment::class.java, Attachment.Type.Video.value)
