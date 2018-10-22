@@ -136,7 +136,7 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
         this.baseType = baseType;
         this.typeFieldName = typeFieldName;
         this.maintainType = maintainType;
-        this.lenient = false;
+        this.lenient = lenient;
     }
 
     /**
