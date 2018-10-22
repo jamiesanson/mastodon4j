@@ -3,6 +3,7 @@ package com.sys1yagi.mastodon4j
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.sys1yagi.mastodon4j.api.entity.Attachment
+import com.sys1yagi.mastodon4j.api.entity.GifvAttachment
 import com.sys1yagi.mastodon4j.api.entity.PhotoAttachment
 import com.sys1yagi.mastodon4j.api.entity.VideoAttachment
 import com.sys1yagi.mastodon4j.api.exception.Mastodon4jRequestException
@@ -46,7 +47,7 @@ private constructor(
                         registerTypeAdapterFactory(
                                 RuntimeTypeAdapterFactory.of(Attachment::class.java, "type")
                                         .registerSubtype(PhotoAttachment::class.java, Attachment.Type.Image.value)
-                                        .registerSubtype(VideoAttachment::class.java, Attachment.Type.Gifv.value)
+                                        .registerSubtype(GifvAttachment::class.java, Attachment.Type.Gifv.value)
                                         .registerSubtype(VideoAttachment::class.java, Attachment.Type.Video.value)
                         )
                     }.create()
