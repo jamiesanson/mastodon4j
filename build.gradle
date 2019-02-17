@@ -17,8 +17,8 @@ buildscript {
 apply plugin: 'kotlin'
 apply plugin: 'maven'
 
-group = "com.sys1yagi"
-version = '1.8.0-snapshot'
+group = "com.jamiesanson.github"
+version = '1.8.2-snapshot'
 
 allprojects {
     repositories {
