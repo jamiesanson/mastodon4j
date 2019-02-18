@@ -41,7 +41,7 @@ class Public(private val client: MastodonClient) {
                     client.get("custom_emojis")
                 },
                 { json ->
-                    client.getSerializer().fromJson(json, object: TypeToken<List<Emoji>>() {}.type)
+                    client.getSerializer().fromJson(json,Emoji::class.java)
                 }
         )
     }
