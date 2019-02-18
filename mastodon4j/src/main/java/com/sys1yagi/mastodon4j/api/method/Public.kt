@@ -1,5 +1,6 @@
 package com.sys1yagi.mastodon4j.api.method
 
+import com.google.gson.reflect.TypeToken
 import com.sys1yagi.mastodon4j.MastodonClient
 import com.sys1yagi.mastodon4j.MastodonRequest
 import com.sys1yagi.mastodon4j.Parameter
@@ -40,7 +41,7 @@ class Public(private val client: MastodonClient) {
                     client.get("custom_emojis")
                 },
                 { json ->
-                    client.getSerializer().fromJson(json, Instance::class.java)
+                    client.getSerializer().fromJson(json, TypeToken.getParameterized(List::class.java, Emoji::class.java).type)
                 }
         )
     }
