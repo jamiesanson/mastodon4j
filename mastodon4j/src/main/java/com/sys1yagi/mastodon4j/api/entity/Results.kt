@@ -13,7 +13,7 @@ class Results(
         val statuses: List<Status> = emptyList(), //	An array of matchhed Statuses
 
         @SerializedName("hashtags")
-        val hashtags: List<String> = emptyList() //	An array of matched hashtags, as strings
+        val hashtags: List<Tag> = emptyList() //	An array of matched hashtags, as strings
 ) {
 
 }
