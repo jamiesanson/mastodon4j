@@ -1,6 +1,5 @@
 package com.sys1yagi.mastodon4j.api.method
 
-import com.google.gson.reflect.TypeToken
 import com.sys1yagi.mastodon4j.MastodonClient
 import com.sys1yagi.mastodon4j.MastodonRequest
 import com.sys1yagi.mastodon4j.Parameter
@@ -10,10 +9,6 @@ import com.sys1yagi.mastodon4j.api.entity.Emoji
 import com.sys1yagi.mastodon4j.api.entity.Instance
 import com.sys1yagi.mastodon4j.api.entity.Results
 import com.sys1yagi.mastodon4j.api.entity.Status
-import com.sys1yagi.mastodon4j.api.exception.Mastodon4jRequestException
-import com.sys1yagi.mastodon4j.extension.fromJson
-import com.sys1yagi.mastodon4j.extension.genericType
-import com.sys1yagi.mastodon4j.extension.toPageable
 
 class Public(private val client: MastodonClient) {
     /**
@@ -63,7 +58,8 @@ class Public(private val client: MastodonClient) {
                                 if (resolve) {
                                     append("resolve", resolve)
                                 }
-                            }
+                            },
+                            "v2"
                     )
                 },
                 {
